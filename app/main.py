@@ -1,52 +1,22 @@
-"""
-FastAPI Application - Fixed for Both Local and Vercel
-=====================================================
-Uses async lifespan for Uvicorn compatibility.
-Vercel will handle it with Mangum.
-"""
-
-from contextlib import asynccontextmanager
+# app/main.py - Remove lifespan, connect per-request
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.config import settings
 from app.database import db
 from app.api.router import api_router
 from app.middleware import LoggingMiddleware
-from app.core.logging_config import logger
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    Async lifespan context manager.
-    REQUIRED by Uvicorn/Starlette - must be async.
-    """
-    logger.info(f"🚀 Starting {settings.app_title}")
-    
-    # Connect to MongoDB (synchronous call inside async)
-    db.connect()
-    
-    yield
-    
-    # Cleanup
-    logger.info("🛑 Shutting down...")
-    db.disconnect()
-
 
 def create_application() -> FastAPI:
-    """Create and configure FastAPI app."""
     app = FastAPI(
-    title=settings.app_title,
-    version=settings.app_version,
-    description="Production-ready FastAPI CRUD API with MongoDB Atlas",
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
-    lifespan=lifespan,
-)
+        title=settings.app_title,
+        version=settings.app_version,
+        description="Production-ready FastAPI CRUD API",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+        # NO lifespan here
+    )
     
-    # CORS
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -55,30 +25,22 @@ def create_application() -> FastAPI:
         allow_headers=["*"],
     )
     
-    # Logging middleware
     app.add_middleware(LoggingMiddleware)
-    
-    # Include API routes
     app.include_router(api_router)
     
     @app.get("/health", tags=["Health"])
     def health_check():
-        return {
-            "status": "healthy",
-            "version": settings.app_version,
-            "environment": settings.environment
-        }
+        # Lazy connection test
+        try:
+            db.connect()
+            return {"status": "healthy", "mongodb": "connected"}
+        except Exception as e:
+            return {"status": "unhealthy", "error": str(e)}
     
     @app.get("/", tags=["Root"])
     def root():
-        return {
-            "message": "FastAPI MongoDB CRUD API",
-            "docs": "/docs",
-            "health": "/health"
-        }
+        return {"message": "FastAPI MongoDB CRUD API", "docs": "/docs"}
     
     return app
 
-
-# Create app instance
 app = create_application()
