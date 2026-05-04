@@ -57,3 +57,5 @@ htmlcov/
 # MongoDB local (if using local MongoDB)
 data/
 mongodb/
+.vercel
+.env*.local
