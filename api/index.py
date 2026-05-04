@@ -15,4 +15,4 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.main import app
 
 # Vercel's @vercel/python builder detects this 'app' object
-# This app already has all routes: /api/v1/items/, /health, /docs, etc.
+# This app already has all routes: /api/v1/items/,.
