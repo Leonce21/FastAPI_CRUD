@@ -43,6 +43,7 @@ def create_application() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
+        root_path="/api",
         lifespan=lifespan  # Now properly async
     )
     
