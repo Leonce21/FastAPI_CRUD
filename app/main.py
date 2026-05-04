@@ -40,10 +40,9 @@ def create_application() -> FastAPI:
         title=settings.app_title,
         version=settings.app_version,
         description="Production-ready FastAPI CRUD API with MongoDB Atlas",
-        docs_url="/docs",
-        redoc_url="/redoc",
-        openapi_url="/openapi.json",
-        root_path="/api",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc",
+        openapi_url="/api/openapi.json",
         lifespan=lifespan  # Now properly async
     )
     
