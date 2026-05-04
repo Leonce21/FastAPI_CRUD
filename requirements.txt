@@ -1,0 +1,24 @@
+# ============================================
+# FastAPI MongoDB CRUD - Dependencies
+# ============================================
+
+# FastAPI - Modern, fast web framework for building APIs
+fastapi==0.109.0
+
+# Uvicorn - ASGI server to run FastAPI
+uvicorn[standard]==0.27.0
+
+# Motor - Async MongoDB driver (required for FastAPI async support)
+motor==3.3.2
+
+# Pydantic Settings - For environment configuration management
+pydantic-settings==2.1.0
+
+# Python-dotenv - Load environment variables from .env file
+python-dotenv==1.0.0
+
+# Email validation support
+email-validator==2.1.0
+
+# Python dateutil - Better date handling
+python-dateutil==2.8.2
